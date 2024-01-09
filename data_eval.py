@@ -56,6 +56,7 @@ ax.spines["right"].set_visible(False)
 
 # Annotate each bar with values from means_nominal
 for i, v in enumerate(means_nominal):
+    plt.text(means_percent[i]-9, i, str(np.round(means_percent[i],0)) + "%", color='white', va='center')
     plt.text(means_percent[i]+1, i, str(np.round(v,1)) + "0 € pro m²", color='black', va='center')
 plt.tight_layout()
 plt.savefig("cost.png", dpi = 250)
@@ -82,6 +83,9 @@ plt.xlabel('Quadratmeterpreis in €')
 plt.ylabel('Anteil in %')
 plt.title('Histogram des Quadratmeterpreises')
 
+for i, perc in enumerate(percentages):
+    plt.text(bins[i]+0.35, percentages[i]+0.7, str(np.round(perc,1)) + "%", color='k', va='center')
+
 # Show plot
 plt.tight_layout()
 plt.savefig("price_area.png", dpi = 250)
@@ -98,6 +102,134 @@ item3 = "I would ... how to defend my rights"
 awns3 = ["know", "not know"]
 item4 = "It would be ... to find a comparable accomodation"
 awns4 = ["easy", "impossible"]
+
+questions = [item1, item2, item3, item4]
+awnser = [awns1, awns2, awns3, awns4]
+awnser = [item for sublist in awnser for item in sublist]
+
+#colors for the categories
+color = ["r", "b", "g", "k", "y"]
+
+quest = "NT07"
+
+# Plotting the lines and markers
+plt.figure(figsize=(8, 8*0.68))
+for i in range(len(questions)):
+    plt.plot([1, 5], [i, i], color='black')  # Line spanning from yes to no
+    plt.plot([1, 1], [i+0.05, i-0.05], color='black')
+    plt.plot([5, 5], [i+0.05, i-0.05], color='black')
+    plt.text(1., i+0.3, questions[i], ha='left', va='center', weight='bold')
+    plt.text(0.9, i, awnser[i*2], ha='right', va='center')
+    plt.text(5.1, i, awnser[i*2+1], ha='left', va='center')
+
+
+for j in range(len(status_val)):
+    first = np.nanmean(functions.condition(data_val, quest + "_01", "NT01", j+1, False))
+    second = np.nanmean(functions.condition(data_val, quest + "_02", "NT01", j+1, False))
+    third = np.nanmean(functions.condition(data_val, quest + "_03", "NT01", j+1, False))
+    fourth = np.nanmean(functions.condition(data_val, quest + "_04", "NT01", j+1, False))
+    averages = [first, second, third, fourth]
+    
+    for i in range(len(questions)):
+        if i == 0:
+            plt.scatter(averages[i], i, s=150, color=color[j], marker='o', alpha = 0.7, label = status_val[j])  # Dot for the average
+        else:
+            plt.scatter(averages[i], i, s=150, color=color[j], marker='o', alpha = 0.7)  # Dot for the average
+
+
+# Add a vertical line at position 3
+plt.axvline(x=3, color='gray', linestyle='--', alpha = 0.4)
+
+# Hide the box
+plt.box(on=None)
+
+
+plt.ylim(-0.5, len(questions) - 0.5)
+plt.legend(ncol=5, loc='lower center', bbox_to_anchor=(0.5, 0), fontsize='medium')
+
+# Set x-axis labels
+plt.xticks([])
+plt.yticks([])
+
+
+plt.title(title, weight='bold')
+
+# Show plot
+plt.tight_layout()
+plt.savefig("terminate.png", dpi = 250)
+plt.show()
+#%% Verteilung für Frage zu Mieterhöhung
+item1 = "hätte ich ... finanziellen Sorgen"
+awns1 = ["keine", "große"]
+item2 = "hätte ich ... Sorgen mein Studium weiterführen zu können"
+awns2 = ["keine", "große"]
+item3 = "sehe ich ... Chancen auf eine vergleichbare Wohnung"
+awns3 = ["sehr gute", "keine"]
+item4 = "wüsste ich ... wie ich mich dagegen wehren kann"
+awns4 = ["ganz genau", "gar nicht"]
+
+# Labels for the questions
+questions = [item1, item2, item3, item4]
+awnser = [awns1, awns2, awns3, awns4]
+awnser = [item for sublist in awnser for item in sublist]
+# Averages for the questions
+
+color = ["r", "b", "g", "k", "y"]
+
+distinction = functions.condition(data_var, "MEANING", "VAR", "NT01")[:-2]
+
+# Plotting the lines and markers
+plt.figure(figsize=(8, 8*0.68))
+for i in range(len(questions)):
+    plt.plot([1, 5], [i, i], color='black')  # Line spanning from yes to no
+    plt.plot([1, 1], [i+0.05, i-0.05], color='black')
+    plt.plot([5, 5], [i+0.05, i-0.05], color='black')
+    plt.text(1., i+0.3, questions[i], ha='left', va='center', weight='bold')
+    plt.text(0.9, i, awnser[i*2], ha='right', va='center')
+    plt.text(5.1, i, awnser[i*2+1], ha='left', va='center')
+
+
+for j in range(len(status_val)):
+    first = np.nanmean(functions.condition(data_val, "NT19_01", "NT01", j+1, False))
+    second = np.nanmean(functions.condition(data_val, "NT19_02", "NT01", j+1, False))
+    third = np.nanmean(functions.condition(data_val, "NT19_03", "NT01", j+1, False))
+    fourth = np.nanmean(functions.condition(data_val, "NT19_04", "NT01", j+1, False))
+    averages = [first, second, third, fourth]
+    
+    for i in range(len(questions)):
+        if i == 0:
+            plt.scatter(averages[i], i, s=150, color=color[j], marker='o', alpha = 0.7, label = status_val[j])  # Dot for the average
+        else:
+            plt.scatter(averages[i], i, s=150, color=color[j], marker='o', alpha = 0.7)  # Dot for the average
+
+# Add a vertical line at position 3
+plt.axvline(x=3, color='gray', linestyle='--', alpha = 0.4)
+
+# Hide the box
+plt.box(on=None)
+plt.ylim(-0.5, len(questions) - 0.5)
+plt.legend(ncol=5, loc='lower center', bbox_to_anchor=(0.5, 0), fontsize='medium')
+
+# Set x-axis labels
+plt.xticks([])
+plt.yticks([])
+plt.title('Würde deine Miete um 10 % angehoben werden,', weight='bold')
+
+# Show plot
+plt.tight_layout()
+plt.savefig("rent_inc.png", dpi = 250)
+
+#%%
+# Labels for the questions
+title = 'Würde dein aktueller Mietvertrag gekündigt werden,'
+item1 = "hätte ich ... Sorgen eine Unterkunft zu finden"
+awns1 = ["keine", "große"]
+item2 = "hätte ich ... Sorgen mein Studium weiterzuführen"
+awns2 = ["keine", "große"]
+item3 = "wüsste ich ... wie ich mich dagegen wehren kann"
+awns3 = ["sehr gute", "keine"]
+item4 = "sehe ich ... Chancen auf eine vergleichbare Wohnung"
+awns4 = ["ganz genau", "gar nicht"]
 
 questions = [item1, item2, item3, item4]
 awnser = [awns1, awns2, awns3, awns4]
@@ -215,7 +347,6 @@ plt.title('Suppose your rent would be increased by 10%', weight='bold')
 plt.tight_layout()
 plt.savefig("rent_inc.png", dpi = 250)
 
-
 #%% Befristung nach Wohnsituation
 plot.position_plot_single(8, 7, [1,2,3,4,5,6], data_var, data_val, data_quest)
 plt.savefig("befristung.png", dpi = 250)
@@ -313,7 +444,7 @@ plt.show()
 data_val.loc[data_val['left'] > 1000, 'left'] = 1001
 
 plt.figure(figsize=(8, 6))
-bins = np.arange(0, 1101, 100)
+bins = np.arange(0, 1201, 200)
 
 
 # Calculate percentages for each bin
@@ -322,16 +453,18 @@ total_counts = np.sum(counts)
 percentages = [(counter / total_counts) * 100 for counter in counts]
 plt.bar(bins[:-1], percentages, width=np.diff(bins), align='edge', alpha=0.7, edgecolor='black')
 plt.vlines(502, 0, 35, color = "red")# Plot histogram with percentage labels on y-axis
-plt.xticks(np.arange(0, 1001, 100))
-plt.text(1101, -0.72, 'über 1000', ha='center', va='center')
+plt.xticks(np.arange(0, 1001, 200))
+plt.text(1201, -1.02, 'über 1000', ha='center', va='center')
 plt.text(490, 9, 'Existenzminimum',rotation = "90",  ha='center', va='center', color = "red")
 plt.xlabel('Monatsbudget nach Abzug der Warmmiete in €')
 plt.ylabel('Anteil in %')
 plt.title('Monatsbudget nach Abzug der Warmmiete')
-plt.ylim(0,18)
+plt.ylim(0,35)
 # Show plot
 plt.tight_layout()
 
+for i, perc in enumerate(percentages):
+    plt.text(bins[i]+53, 3, str(np.round(perc,0)) + "%", color='white', va='center')
 
 limit = 502
 
@@ -350,11 +483,25 @@ plt.show()
 miete_durchschnitt = np.mean(data_val['NT17_01'].dropna())
 
 #%% save text to txt
-# with open('entries.txt', 'w') as file:
-#     for index, row in data_val.iterrows():
-#         file.write(f'Entry {index + 1}:\n')  # Write entry number
-#         for item in row['NT11_01']:
-#             file.write(f'- {item}\n')  # Write each item in the list with a bullet point
-#         file.write('\n')  # Add a blank line between entries
+text1 = data_val['NT11_01'].dropna()
 
-# print("Entries saved to 'entries.txt'.")
+
+# File name to save the text
+file_name = 'text_entries_1.txt'
+
+# Writing entries to a text file with line breaks
+with open(file_name, 'w') as file:
+    for entry in text1:
+        file.write(str(entry) + '\n\n')  # Adding an extra newline for two lines of space+
+        
+#%%
+text2 = data_val['NT21_01'].dropna()
+
+
+# File name to save the text
+file_name = 'text_entries_2.txt'
+
+# Writing entries to a text file with line breaks
+with open(file_name, 'w') as file:
+    for entry in text2:
+        file.write(str(entry) + '\n\n')  # Adding an extra newline for two lines of space

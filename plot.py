@@ -64,17 +64,33 @@ def plot_hist(quest, data_var, data_val, data_quest, includes = None):
         data = new_data
         bin_labels = new_bin_labels
     
+
+    
     
     # Calculate the bin positions and widths
     bin_positions = np.arange(len(bin_labels) + 1) +0.5  # Center bins at integers
     
     # Create histogram with custom bin positions
     plt.hist(data, bins=bin_positions, edgecolor='black', align='mid', density = "True")
+    # Get current y-axis ticks
+    y_vals = plt.gca().get_yticks()
     
+    counts, bins = np.histogram(data, bins=bin_positions)
+    total_counts = np.sum(counts)
+    percentages = [(counter / total_counts) * 100 for counter in counts]
+    # Convert y-axis ticks to percentages
+    y_labels = [str(int(y * 100)) for y in y_vals]
+    
+    
+    # Set the y-axis labels to show percentages
+    plt.gca().set_yticklabels(y_labels)
     # Set x-axis tick positions and labels
     tick_positions = np.linspace(1, len(bin_labels), len(bin_labels))  # Tick positions at midpoints
     plt.xticks(tick_positions, bin_labels, rotation=45, ha='right', fontsize='small')
     
+    for i, pos in enumerate(bin_positions[:-1]):
+        plt.text(pos+0.25, (percentages[i]+2.3)/100, str(np.round(percentages[i],1)) + "%", color='k', va='center')
     plt.ylabel('Anteil %')
-    plt.title(title)
+    plt.title(title,wrap=True)
+    plt.ylim(0,(np.max(percentages)+5)/100)
     plt.tight_layout()
